@@ -40,9 +40,18 @@ export default async function DskpPage({ searchParams }: DskpPageProps) {
       user={user}
       actions={
         <>
-          <button className="rounded-full border border-[var(--accent)] bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:bg-[var(--accent-strong)]">
-            Guna dalam RPH
-          </button>
+          {activeTextbook?.topics[0] ? (
+            <Link
+              href={`/dashboard/rph?topic=${activeTextbook.topics[0].id}`}
+              className="rounded-full border border-[var(--accent)] bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:bg-[var(--accent-strong)]"
+            >
+              Guna dalam RPH
+            </Link>
+          ) : (
+            <button className="rounded-full border border-[var(--accent)] bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:bg-[var(--accent-strong)]">
+              Guna dalam RPH
+            </button>
+          )}
           <form action={logoutAction}>
             <button className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[var(--ink)] transition hover:bg-black/4">
               Keluar
@@ -184,6 +193,15 @@ export default async function DskpPage({ searchParams }: DskpPageProps) {
                         </p>
                       </div>
                     ))}
+                  </div>
+
+                  <div className="mt-4">
+                    <Link
+                      href={`/dashboard/rph?topic=${topic.id}`}
+                      className="inline-flex rounded-full border border-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--accent)] transition hover:bg-[var(--accent)] hover:text-white"
+                    >
+                      Pilih unit ini untuk RPH
+                    </Link>
                   </div>
                 </div>
               )) ?? (

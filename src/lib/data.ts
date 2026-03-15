@@ -94,3 +94,26 @@ export async function getDskpSubjects() {
     orderBy: { name: "asc" },
   });
 }
+
+export async function getDskpTopicSelection(topicId: string) {
+  return prisma.textbookTopic.findUnique({
+    where: { id: topicId },
+    include: {
+      textbook: {
+        include: {
+          subject: true,
+        },
+      },
+      mappings: {
+        include: {
+          standard: true,
+        },
+        orderBy: {
+          standard: {
+            code: "asc",
+          },
+        },
+      },
+    },
+  });
+}

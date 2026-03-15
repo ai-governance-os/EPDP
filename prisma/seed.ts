@@ -167,6 +167,85 @@ async function seedSchoolCore() {
 }
 
 async function seedDskpModule() {
+  async function createSubjectBundle(input: {
+    code: string;
+    name: string;
+    language: string;
+    yearLevels: string;
+    textbookTitle: string;
+    yearLevel: number;
+    volumeLabel: string;
+    notes: string;
+    topics: Array<{
+      unitCode: string;
+      title: string;
+      focus: string;
+      mappings: Array<{
+        standardType: string;
+        code: string;
+        description: string;
+        notes: string;
+        rationale: string;
+      }>;
+    }>;
+  }) {
+    const subject = await prisma.subject.create({
+      data: {
+        code: input.code,
+        name: input.name,
+        stream: "SJKC",
+        language: input.language,
+        yearLevels: input.yearLevels,
+        syllabus: "KSSR Semakan",
+      },
+    });
+
+    const textbook = await prisma.textbook.create({
+      data: {
+        subjectId: subject.id,
+        title: input.textbookTitle,
+        yearLevel: input.yearLevel,
+        volumeLabel: input.volumeLabel,
+        publisher: "KPM Digital",
+        notes: input.notes,
+      },
+    });
+
+    for (let index = 0; index < input.topics.length; index += 1) {
+      const topicData = input.topics[index];
+      const topic = await prisma.textbookTopic.create({
+        data: {
+          textbookId: textbook.id,
+          unitCode: topicData.unitCode,
+          title: topicData.title,
+          sequence: index + 1,
+          focus: topicData.focus,
+        },
+      });
+
+      for (const mapping of topicData.mappings) {
+        const standard = await prisma.dskpStandard.create({
+          data: {
+            subjectId: subject.id,
+            yearLevel: input.yearLevel,
+            standardType: mapping.standardType,
+            code: mapping.code,
+            description: mapping.description,
+            notes: mapping.notes,
+          },
+        });
+
+        await prisma.topicStandardMapping.create({
+          data: {
+            topicId: topic.id,
+            standardId: standard.id,
+            rationale: mapping.rationale,
+          },
+        });
+      }
+    }
+  }
+
   const bahasaCina = await prisma.subject.create({
     data: {
       code: "SJKC-BC",
@@ -434,6 +513,198 @@ async function seedDskpModule() {
         topicId: snTopic2.id,
         standardId: standardByCode.get("SN-3.2.2")!,
         rationale: "Topik manusia dikaitkan dengan penjagaan kesihatan tubuh.",
+      },
+    ],
+  });
+
+  await createSubjectBundle({
+    code: "SJKC-BM",
+    name: "Bahasa Melayu",
+    language: "Malay",
+    yearLevels: "Tahun 4-6",
+    textbookTitle: "Bahasa Melayu Tahun 4 SJKC",
+    yearLevel: 4,
+    volumeLabel: "Buku Teks",
+    notes: "Set contoh untuk pemilihan standard berasaskan unit.",
+    topics: [
+      {
+        unitCode: "BM1",
+        title: "Jiran Sepakat",
+        focus: "Kemahiran mendengar dan bertutur",
+        mappings: [
+          {
+            standardType: "SK",
+            code: "BM-1.2",
+            description: "Mendengar, mengecam dan memberikan respons terhadap ujaran.",
+            notes: "Diguna untuk aktiviti lisan dan dialog.",
+            rationale: "Unit ini sesuai untuk aktiviti komunikasi harian.",
+          },
+          {
+            standardType: "SP",
+            code: "BM-1.2.2",
+            description: "Menjelaskan maklumat berdasarkan bahan rangsangan.",
+            notes: "Sesuai untuk aktiviti perbualan berpandu.",
+            rationale: "Guru boleh gunakan gambar dan situasi kejiranan.",
+          },
+        ],
+      },
+      {
+        unitCode: "BM2",
+        title: "Amalan Bersih",
+        focus: "Kemahiran menulis dan membina ayat",
+        mappings: [
+          {
+            standardType: "SP",
+            code: "BM-3.3.1",
+            description: "Membina dan menulis ayat yang gramatis.",
+            notes: "Boleh digabungkan dengan latihan buku teks.",
+            rationale: "Topik kebersihan sesuai untuk latihan ayat lengkap.",
+          },
+        ],
+      },
+    ],
+  });
+
+  await createSubjectBundle({
+    code: "SJKC-BI",
+    name: "English",
+    language: "English",
+    yearLevels: "Year 4-6",
+    textbookTitle: "English Year 4 SJKC",
+    yearLevel: 4,
+    volumeLabel: "Textbook",
+    notes: "Starter mappings for CEFR-aligned classroom selection.",
+    topics: [
+      {
+        unitCode: "EN1",
+        title: "Where Are You From?",
+        focus: "Speaking and listening",
+        mappings: [
+          {
+            standardType: "SK",
+            code: "BI-1.1",
+            description: "Understand main idea from simple spoken texts.",
+            notes: "Useful for classroom exchanges and listening tasks.",
+            rationale: "Topic introduces pupils to short personal responses.",
+          },
+          {
+            standardType: "SP",
+            code: "BI-2.1.1",
+            description: "Give detailed information about themselves and others.",
+            notes: "Can be used in pair speaking activities.",
+            rationale: "Pupils introduce themselves using guided questions.",
+          },
+        ],
+      },
+      {
+        unitCode: "EN2",
+        title: "My Week",
+        focus: "Reading and guided writing",
+        mappings: [
+          {
+            standardType: "SP",
+            code: "BI-3.2.2",
+            description: "Understand specific information in simple texts.",
+            notes: "Works with timetable and weekly routine tasks.",
+            rationale: "Unit reading passages map neatly to routine vocabulary.",
+          },
+        ],
+      },
+    ],
+  });
+
+  await createSubjectBundle({
+    code: "SJKC-MORAL",
+    name: "Pendidikan Moral",
+    language: "Malay",
+    yearLevels: "Tahun 4-6",
+    textbookTitle: "Pendidikan Moral Tahun 4 SJKC",
+    yearLevel: 4,
+    volumeLabel: "Buku Teks",
+    notes: "Contoh awal untuk nilai dan refleksi murid.",
+    topics: [
+      {
+        unitCode: "PM1",
+        title: "Berterima Kasih",
+        focus: "Penghayatan nilai dalam kehidupan harian",
+        mappings: [
+          {
+            standardType: "SK",
+            code: "PM-2.1",
+            description: "Memahami dan mengamalkan nilai berterima kasih.",
+            notes: "Boleh disambung dengan aktiviti refleksi.",
+            rationale: "Unit ini sesuai untuk aktiviti situasi harian murid.",
+          },
+          {
+            standardType: "SP",
+            code: "PM-2.1.1",
+            description: "Menjelaskan cara mengamalkan nilai berterima kasih.",
+            notes: "Sesuai untuk dialog dan jurnal ringkas.",
+            rationale: "Pupils can relate the value to classroom examples.",
+          },
+        ],
+      },
+      {
+        unitCode: "PM2",
+        title: "Tanggungjawab Bersama",
+        focus: "Amalan tanggungjawab di sekolah",
+        mappings: [
+          {
+            standardType: "SP",
+            code: "PM-4.2.2",
+            description: "Menghuraikan kepentingan bertanggungjawab terhadap komuniti sekolah.",
+            notes: "Boleh dijadikan aktiviti projek mini.",
+            rationale: "Topic matches school cleanliness and class duty activities.",
+          },
+        ],
+      },
+    ],
+  });
+
+  await createSubjectBundle({
+    code: "SJKC-SEJ",
+    name: "Sejarah",
+    language: "Malay",
+    yearLevels: "Tahun 4-6",
+    textbookTitle: "Sejarah Tahun 4 SJKC",
+    yearLevel: 4,
+    volumeLabel: "Buku Teks",
+    notes: "Padanan permulaan untuk sejarah tempatan dan identiti negara.",
+    topics: [
+      {
+        unitCode: "SJ1",
+        title: "Mengenali Sejarah",
+        focus: "Konsep masa, sumber dan bukti",
+        mappings: [
+          {
+            standardType: "SK",
+            code: "SJ-1.1",
+            description: "Memahami pengertian sejarah dan sumber sejarah.",
+            notes: "Sesuai untuk aktiviti inkuiri awal.",
+            rationale: "Topik pembukaan membantu murid memahami asas subjek.",
+          },
+          {
+            standardType: "SP",
+            code: "SJ-1.1.2",
+            description: "Menjelaskan contoh sumber sejarah di persekitaran murid.",
+            notes: "Boleh dikaitkan dengan gambar, artifak dan keluarga.",
+            rationale: "Pupils can identify local and family history evidence.",
+          },
+        ],
+      },
+      {
+        unitCode: "SJ2",
+        title: "Negaraku Tercinta",
+        focus: "Identiti negara dan simbol kebangsaan",
+        mappings: [
+          {
+            standardType: "SP",
+            code: "SJ-5.1.3",
+            description: "Menerangkan kepentingan menghormati lambang kebangsaan.",
+            notes: "Sesuai untuk aktiviti penerangan dan projek poster.",
+            rationale: "Unit ini mudah dipadankan dengan amalan patriotik sekolah.",
+          },
+        ],
       },
     ],
   });
