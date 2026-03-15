@@ -1,7 +1,5 @@
-import { redirect } from "next/navigation";
-
 import { DashboardShell } from "@/components/dashboard-shell";
-import { getSessionUser } from "@/lib/auth";
+import { requireSessionUser } from "@/lib/auth";
 import { getDskpTopicSelection, getRphEntries } from "@/lib/data";
 
 import { logoutAction } from "../actions";
@@ -13,11 +11,7 @@ type RphPageProps = {
 };
 
 export default async function RphPage({ searchParams }: RphPageProps) {
-  const user = await getSessionUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await requireSessionUser();
 
   const submissions = await getRphEntries();
   const params = await searchParams;

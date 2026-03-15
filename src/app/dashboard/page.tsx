@@ -1,7 +1,5 @@
-import { redirect } from "next/navigation";
-
 import { DashboardShell } from "@/components/dashboard-shell";
-import { getSessionUser } from "@/lib/auth";
+import { requireSessionUser } from "@/lib/auth";
 import { getDashboardData } from "@/lib/data";
 
 import { logoutAction } from "./actions";
@@ -13,11 +11,7 @@ const weeklyFocus = [
 ];
 
 export default async function DashboardPage() {
-  const user = await getSessionUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await requireSessionUser();
 
   const { metrics, latestRph } = await getDashboardData();
 

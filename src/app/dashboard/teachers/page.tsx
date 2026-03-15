@@ -1,17 +1,11 @@
-import { redirect } from "next/navigation";
-
 import { DashboardShell } from "@/components/dashboard-shell";
 import { getTeachers } from "@/lib/data";
-import { getSessionUser } from "@/lib/auth";
+import { requireSessionUser } from "@/lib/auth";
 
 import { logoutAction } from "../actions";
 
 export default async function TeachersPage() {
-  const user = await getSessionUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await requireSessionUser();
 
   const teachers = await getTeachers();
 

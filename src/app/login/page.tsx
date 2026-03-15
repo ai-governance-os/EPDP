@@ -7,7 +7,7 @@ import { getSessionUser } from "@/lib/auth";
 import { loginAction } from "./actions";
 
 type LoginPageProps = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; redirected?: string }>;
 };
 
 const roleOptions = [
@@ -37,6 +37,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   const params = await searchParams;
   const showError = params.error === "missing-email";
+  const showRedirectNotice = params.redirected === "1";
 
   return (
     <main className="min-h-screen bg-[var(--canvas)] px-5 py-8 text-[var(--ink)] sm:px-8 lg:px-10">
@@ -87,6 +88,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             title="Masuk ke portal EPDP"
             description="Gunakan borang ini untuk masuk sebagai guru, penyemak atau pentadbir. Nanti kita akan tukar kepada sambungan pengguna sebenar."
           >
+            {showRedirectNotice ? (
+              <div className="mb-5 rounded-2xl border border-[var(--accent)]/20 bg-[var(--panel-alt)] px-4 py-3 text-sm leading-6 text-[var(--ink)]">
+                Sila log masuk dahulu untuk membuka halaman dashboard.
+              </div>
+            ) : null}
+
             <form action={loginAction} className="space-y-5">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-[var(--ink)]" htmlFor="email">

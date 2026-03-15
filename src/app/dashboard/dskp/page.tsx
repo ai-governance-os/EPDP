@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard-shell";
-import { getSessionUser } from "@/lib/auth";
+import { requireSessionUser } from "@/lib/auth";
 import { getDskpSubjects } from "@/lib/data";
 
 import { logoutAction } from "../actions";
@@ -15,11 +14,7 @@ type DskpPageProps = {
 };
 
 export default async function DskpPage({ searchParams }: DskpPageProps) {
-  const user = await getSessionUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await requireSessionUser();
 
   const subjects = await getDskpSubjects();
   const params = await searchParams;

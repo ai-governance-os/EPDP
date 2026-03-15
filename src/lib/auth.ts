@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export type UserRole = "admin" | "teacher" | "reviewer";
 
@@ -65,4 +66,14 @@ export async function createSession(role: UserRole, email: string) {
 export async function clearSession() {
   const store = await cookies();
   store.delete(SESSION_COOKIE);
+}
+
+export async function requireSessionUser() {
+  const user = await getSessionUser();
+
+  if (!user) {
+    redirect("/login?redirected=1");
+  }
+
+  return user;
 }
