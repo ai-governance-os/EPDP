@@ -4,11 +4,11 @@ EPDP is the first working prototype for an education planning and school operati
 
 ## Current scope
 
-- Responsive dashboard landing page
-- Sidebar navigation for major school modules
-- Summary cards for daily school activity
-- Workflow status section for RPH, semakan and pentaksiran
-- Announcement feed and phased product roadmap
+- Responsive login page with role-based demo access
+- Session-based dashboard flow using secure cookies
+- Shared admin shell with navigation for core modules
+- Dashboard, teacher, student and RPH prototype pages
+- Summary cards, workflow blocks and phased product roadmap
 
 ## Tech stack
 
@@ -35,8 +35,8 @@ npm run build
 
 ## Planned next steps
 
-1. Add authentication and role-based access.
-2. Create teacher and student management modules.
-3. Build RPH entry and approval workflow.
-4. Connect a real database and API layer.
+1. Replace demo session flow with a real authentication provider.
+2. Connect teacher, student and RPH pages to a real database.
+3. Add create, edit and approval flows for RPH.
+4. Build reporting, PDF export and school settings modules.
 5. Add analytics and AI-powered school tools.
