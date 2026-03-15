@@ -2,31 +2,9 @@ import { redirect } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard-shell";
 import { getSessionUser } from "@/lib/auth";
+import { getDashboardData } from "@/lib/data";
 
 import { logoutAction } from "./actions";
-
-const metrics = [
-  {
-    label: "RPH minggu ini",
-    value: "62",
-    detail: "48 siap, 14 masih draf",
-  },
-  {
-    label: "Murid aktif",
-    value: "1,248",
-    detail: "36 kelas dengan data terkini",
-  },
-  {
-    label: "Semakan tertunggak",
-    value: "18",
-    detail: "Perlu tindakan penyemak hari ini",
-  },
-  {
-    label: "Latihan AI",
-    value: "93",
-    detail: "Dijana dalam 30 hari terakhir",
-  },
-];
 
 const weeklyFocus = [
   "Semak RPH minggu depan sebelum Jumaat, 20 Mac 2026.",
@@ -40,6 +18,8 @@ export default async function DashboardPage() {
   if (!user) {
     redirect("/login");
   }
+
+  const { metrics, latestRph } = await getDashboardData();
 
   return (
     <DashboardShell
@@ -114,6 +94,31 @@ export default async function DashboardPage() {
             ))}
           </div>
         </article>
+      </section>
+
+      <section className="mt-6 rounded-[28px] border border-black/6 bg-[var(--panel-alt)] p-6">
+        <p className="text-sm uppercase tracking-[0.24em] text-[var(--accent)]">
+          RPH terkini dari database
+        </p>
+        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          {latestRph.map((entry) => (
+            <article
+              key={entry.id}
+              className="rounded-2xl border border-black/6 bg-white p-4"
+            >
+              <p className="text-lg font-medium text-[var(--ink)]">{entry.subject}</p>
+              <p className="mt-1 text-sm text-[var(--ink-muted)]">
+                {entry.week} | {entry.schoolClass.name}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">
+                {entry.objective}
+              </p>
+              <p className="mt-4 text-sm text-[var(--ink)]">
+                {entry.teacher.name} | {entry.status}
+              </p>
+            </article>
+          ))}
+        </div>
       </section>
     </DashboardShell>
   );

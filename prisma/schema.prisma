@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Teacher {
+  id         String   @id @default(cuid())
+  name       String
+  email      String   @unique
+  role       String
+  status     String
+  workload   Int
+  subject    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  rphEntries Rph[]
+}
+
+model SchoolClass {
+  id         String    @id @default(cuid())
+  name       String    @unique
+  yearLevel  Int
+  pupilCount Int
+  status     String
+  imported   Int
+  notes      String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  students   Student[]
+  rphEntries Rph[]
+}
+
+model Student {
+  id            String      @id @default(cuid())
+  fullName      String
+  className     String
+  attendanceNo  Int
+  status        String
+  schoolClassId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  schoolClass   SchoolClass @relation(fields: [schoolClassId], references: [id], onDelete: Cascade)
+}
+
+model Rph {
+  id            String      @id @default(cuid())
+  title         String
+  week          String
+  status        String
+  updatedLabel  String
+  subject       String
+  objective     String
+  teacherId     String
+  schoolClassId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  teacher       Teacher     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  schoolClass   SchoolClass @relation(fields: [schoolClassId], references: [id], onDelete: Cascade)
+}

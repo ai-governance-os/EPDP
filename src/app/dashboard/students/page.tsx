@@ -1,15 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard-shell";
+import { getClassSummaries } from "@/lib/data";
 import { getSessionUser } from "@/lib/auth";
 
 import { logoutAction } from "../actions";
-
-const classSummary = [
-  { className: "1 Bestari", pupils: 34, imported: "100%", notes: "Sedia semak" },
-  { className: "4 Cemerlang", pupils: 36, imported: "92%", notes: "3 murid perlu dikemas kini" },
-  { className: "6 Wawasan", pupils: 32, imported: "100%", notes: "Lengkap" },
-];
 
 export default async function StudentsPage() {
   const user = await getSessionUser();
@@ -17,6 +12,8 @@ export default async function StudentsPage() {
   if (!user) {
     redirect("/login");
   }
+
+  const classSummary = await getClassSummaries();
 
   return (
     <DashboardShell
@@ -40,16 +37,16 @@ export default async function StudentsPage() {
       <section className="grid gap-4 md:grid-cols-3">
         {classSummary.map((item) => (
           <article
-            key={item.className}
+            key={item.id}
             className="rounded-[24px] border border-black/6 bg-[var(--panel-alt)] p-5"
           >
-            <p className="text-sm text-[var(--ink-muted)]">{item.className}</p>
+            <p className="text-sm text-[var(--ink-muted)]">{item.name}</p>
             <p className="mt-4 text-4xl font-semibold tracking-tight">
-              {item.pupils}
+              {item.pupilCount}
             </p>
             <p className="mt-2 text-sm text-[var(--ink)]">murid berdaftar</p>
             <p className="mt-4 text-sm leading-6 text-[var(--ink-muted)]">
-              Data diimport: {item.imported}
+              Data diimport: {item.imported}%
             </p>
             <p className="mt-1 text-sm leading-6 text-[var(--ink-muted)]">
               {item.notes}

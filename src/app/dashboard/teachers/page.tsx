@@ -1,15 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard-shell";
+import { getTeachers } from "@/lib/data";
 import { getSessionUser } from "@/lib/auth";
 
 import { logoutAction } from "../actions";
-
-const teachers = [
-  { name: "Cikgu Farid", role: "Guru Bahasa Melayu", status: "Aktif", workload: "26 waktu" },
-  { name: "Cikgu Liyana", role: "Guru Matematik", status: "Aktif", workload: "24 waktu" },
-  { name: "PK Noraini", role: "Penyemak RPH", status: "Semakan", workload: "12 waktu" },
-];
 
 export default async function TeachersPage() {
   const user = await getSessionUser();
@@ -17,6 +12,8 @@ export default async function TeachersPage() {
   if (!user) {
     redirect("/login");
   }
+
+  const teachers = await getTeachers();
 
   return (
     <DashboardShell
@@ -53,7 +50,7 @@ export default async function TeachersPage() {
               <div className="font-medium text-[var(--ink)]">{teacher.name}</div>
               <div>{teacher.role}</div>
               <div>{teacher.status}</div>
-              <div>{teacher.workload}</div>
+              <div>{teacher.workload} waktu</div>
             </div>
           ))}
         </div>
