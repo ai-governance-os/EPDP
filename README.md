@@ -9,6 +9,7 @@ EPDP is the first working prototype for an education planning and school operati
 - Shared admin shell with navigation for core modules
 - SQLite database with Prisma ORM and seed data
 - Dashboard, teacher, student and RPH pages backed by database reads
+- DSKP selection module with sample SJKC subject-to-textbook mappings
 - Summary cards, workflow blocks and phased product roadmap
 
 ## Tech stack
@@ -48,6 +49,10 @@ npm run build
 
 1. Replace demo session flow with a real authentication provider.
 2. Add create, edit and approval flows for RPH.
-3. Build CRUD forms for teachers and students.
-4. Build reporting, PDF export and school settings modules.
-5. Add analytics and AI-powered school tools.
+3. Expand DSKP coverage to more subjects, years and official mappings.
+4. Build CRUD forms for teachers and students.
+5. Build reporting, PDF export and school settings modules.
+
+## Notes
+
+- The current DSKP module ships with starter sample mappings for SJKC subjects so the selection workflow can be tested end to end.

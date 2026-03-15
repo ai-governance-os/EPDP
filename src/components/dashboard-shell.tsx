@@ -20,6 +20,11 @@ const navigation = [
     label: "RPH",
     description: "Rancangan pengajaran mingguan",
   },
+  {
+    href: "/dashboard/dskp",
+    label: "DSKP",
+    description: "Pilih standard ikut buku teks",
+  },
 ];
 
 type DashboardShellProps = {

@@ -25,6 +25,20 @@ model Teacher {
   rphEntries Rph[]
 }
 
+model Subject {
+  id          String         @id @default(cuid())
+  code        String         @unique
+  name        String
+  stream      String
+  language    String
+  yearLevels  String
+  syllabus    String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  textbooks   Textbook[]
+  standards   DskpStandard[]
+}
+
 model SchoolClass {
   id         String    @id @default(cuid())
   name       String    @unique
@@ -65,4 +79,58 @@ model Rph {
   updatedAt     DateTime    @updatedAt
   teacher       Teacher     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   schoolClass   SchoolClass @relation(fields: [schoolClassId], references: [id], onDelete: Cascade)
+}
+
+model Textbook {
+  id          String         @id @default(cuid())
+  subjectId   String
+  title       String
+  yearLevel   Int
+  volumeLabel String
+  publisher   String
+  notes       String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  subject     Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topics      TextbookTopic[]
+}
+
+model TextbookTopic {
+  id          String                @id @default(cuid())
+  textbookId  String
+  unitCode    String
+  title       String
+  sequence    Int
+  focus       String
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  textbook    Textbook              @relation(fields: [textbookId], references: [id], onDelete: Cascade)
+  mappings    TopicStandardMapping[]
+}
+
+model DskpStandard {
+  id          String                @id @default(cuid())
+  subjectId   String
+  yearLevel   Int
+  standardType String
+  code        String
+  description String
+  notes       String
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  subject     Subject               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  mappings    TopicStandardMapping[]
+}
+
+model TopicStandardMapping {
+  id          String       @id @default(cuid())
+  topicId     String
+  standardId  String
+  rationale   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  topic       TextbookTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  standard    DskpStandard  @relation(fields: [standardId], references: [id], onDelete: Cascade)
+
+  @@unique([topicId, standardId])
 }

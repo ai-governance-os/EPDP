@@ -66,3 +66,31 @@ export async function getRphEntries() {
     orderBy: { updatedAt: "desc" },
   });
 }
+
+export async function getDskpSubjects() {
+  return prisma.subject.findMany({
+    include: {
+      textbooks: {
+        include: {
+          topics: {
+            include: {
+              mappings: {
+                include: {
+                  standard: true,
+                },
+                orderBy: {
+                  standard: {
+                    code: "asc",
+                  },
+                },
+              },
+            },
+            orderBy: { sequence: "asc" },
+          },
+        },
+        orderBy: [{ yearLevel: "asc" }, { title: "asc" }],
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+}
